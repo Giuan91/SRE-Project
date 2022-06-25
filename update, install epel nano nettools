@@ -8,15 +8,15 @@
           name: "*"
           state: latest
 
-      - name: install nano
-        yum:
-          name: nano
-          state: latest  
-
       - name: install epel-release
         yum:
           name: epel-release
           state: latest
+
+      - name: install nano
+        yum:
+          name: nano
+          state: latest  
 
       - name: net-tools
         yum:
