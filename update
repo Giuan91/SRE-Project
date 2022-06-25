@@ -1,0 +1,8 @@
+---
+  - name: centosupdate
+    tasks:
+      - name: update os 
+        yum:
+          name: "*"
+          state: latest
+        
