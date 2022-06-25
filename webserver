@@ -1,0 +1,30 @@
+---
+    - name: Installing all required apps for webserver on centos 7
+      hosts: all
+      become: yes
+      tasks: 
+
+        - name: Install yum utils
+          yum:
+            name: yum-utils
+            state: latest
+
+        - name: enable remi-php74 repository
+          shell: yum-config-manager --enable remi-php74
+          args:
+            creates: /etc/yum.repos.d/centos_o.repo
+
+        - name: Install Apache server
+          yum:
+            name: httpd
+            state: latest
+
+        - name: Instal PHP
+          yum:
+            name:
+              - php
+              - php-cli
+            state: latest
+
+        - name: Start apache server
+          shell: systemctl start httpd
