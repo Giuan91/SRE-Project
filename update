@@ -1,6 +1,7 @@
 ---
   - name: centosupdate
     hosts: all
+    become: yes
     tasks:
       - name: update os 
         yum:
