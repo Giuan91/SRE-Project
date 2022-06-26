@@ -8,12 +8,14 @@
           name: "*"
           state: latest
 
-      - name: install epel-release and remi-release
+      - name: install epel-release
         yum:
-          name: 
-            - epel-release
-            - remi-release
+          name: epel-release
           state: latest
+
+      - name: install remi-release
+        yum:
+          name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 
       - name: install nano
         yum:
