@@ -1,0 +1,8 @@
+---
+  - name: add new ip to nfs server exports and selinux
+    hosts: nfs
+    task: 
+      - name: add ip to exports
+        lineinfile: 
+          path: /etc/exports
+          line: '/var/nfs_share_dir 10.0.0.0/24(rw,sync,no_root_sqash)
