@@ -1,8 +1,56 @@
 ---
-  - name: add new ip to nfs server exports and selinux
+  - name: Create NFS server
     hosts: nfs
-    task: 
+    become: yes
+    tasks:   
+      - name: Install NFS
+        yum: 
+          name: nfs-utils
+          state: latest
+      
+      - name: create shared directory
+        file:
+            path: /var/nfs_share_dir
+            state: directory
+            owner: nfsnobody
+            group: nfsnobody
+            mode: 0755
+            recurse: yes
+    
+      - name: allow nfs in selinux
+        ansible.posix.seboolean:
+          name: nfs_export_all_rw
+          state: yes
+          persistent: yes
+
+    #   - name: allow nfs in selinux
+    #     shell: setsebool -P nfs_export_all_rw 1
+
       - name: add ip to exports
         lineinfile: 
           path: /etc/exports
-          line: '/var/nfs_share_dir 10.0.0.0/24(rw,sync,no_root_sqash)
+          line: '/var/nfs_share_dir 10.0.0.0/24(rw,sync,no_root_sqash)'
+      
+      - name: Add rules in Firewall
+        ansible.posix.firewalld:
+          service: 
+            - nfs
+            - mountd
+            - rpc-bind
+          permanent: yes
+          state: enabled
+      
+      - name: restart firewall
+        ansible.builtin.systemd:
+          name: firewalld
+          state: reloaded
+
+      - name: Start and enable NFS service
+        ansible.builtin.systemd:
+            name: 
+              - rpcbind
+              - nfs-server
+              - nfs-lock
+              - nfs-idmap
+            state: started
+            enabled: yes

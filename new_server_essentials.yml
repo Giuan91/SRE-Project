@@ -1,6 +1,6 @@
 ---
   - name: Upgrade and install epel release, nano and net-tools
-    hosts: all
+    hosts: '{{target}}'
     become: yes
     tasks:
       - name: update os 
@@ -8,6 +8,11 @@
           name: "*"
           state: latest
 
+      - name: install Selinux policy utils for python
+        yum:
+          name: policycoreutils-python
+          state: latest
+      
       - name: install epel-release
         yum:
           name: epel-release
