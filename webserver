@@ -27,9 +27,6 @@
               - php-mysqlnd
             state: latest
 
-        - name: Start apache server
-          shell: systemctl start httpd
-
         - name: Install NFS-Client
           yum: 
             name: nfs-utils
@@ -56,3 +53,10 @@
           lineinfile:
             path: /etc/fstab
             line: 'nfs 10.0.0.95:/var/nfs_shared_dir /var/www/html -o context="system_u:object_r:httpd_sys_content_t:s0"'
+
+        - name: start and enable httpd
+          ansible.builtin.systemd:
+            name: httpd.service
+            state: started
+            enabled: yes
+            
