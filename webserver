@@ -29,5 +29,18 @@
         - name: Start apache server
           shell: systemctl start httpd
 
+        - name: Install NFS-Client
+          yum: 
+            name: nfs-utils
+            state: latest
+
         - name: Mount nfs file with SELinux Context
-          shell: mount 10.0.0.95:/var/nfs_shared_dir /var/www/html -o context="system_u:object_r:httpd_sys_content_t:s0"
+          shell: 
+            - rm -rf /var/www/html
+            - mkdir -p /var/www/html
+            - mount -t nfs 10.0.0.95:/var/nfs_shared_dir /var/www/html -o context="system_u:object_r:httpd_sys_content_t:s0"
+
+        - name: edit fstab for permanent mount with selinux context
+          lineinfile:
+            path: /etc/fstab
+            line: 'nfs 10.0.0.95:/var/nfs_shared_dir /var/www/html -o context="system_u:object_r:httpd_sys_content_t:s0"'
