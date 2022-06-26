@@ -16,6 +16,17 @@
             group: nfsnobody
             mode: 0755
             recurse: yes
+
+      - name: start nfs services
+        systemd:
+          name: "{{ item }}"
+          state: started
+          enabled: yes
+        with_items:
+          - 'rpcbind'
+          - 'nfs-server'
+          - 'nfs-lock'
+          - 'nfs-idmap' 
     
       - name: allow nfs in selinux
         ansible.posix.seboolean:
@@ -30,27 +41,24 @@
         lineinfile: 
           path: /etc/exports
           line: '/var/nfs_share_dir 10.0.0.0/24(rw,sync,no_root_sqash)'
-      
-      - name: Add rules in Firewall
-        ansible.posix.firewalld:
-          service: 
-            - nfs
-            - mountd
-            - rpc-bind
-          permanent: yes
-          state: enabled
-      
-      - name: restart firewall
-        ansible.builtin.systemd:
-          name: firewalld
-          state: reloaded
 
-      - name: Start and enable NFS service
-        ansible.builtin.systemd:
-            name: 
-              - rpcbind
-              - nfs-server
-              - nfs-lock
-              - nfs-idmap
-            state: started
-            enabled: yes
+      - name: restart nfs
+        service:
+            name: nfs-server
+            state: restarted
+
+      - name: Add rules in Firewall
+        firewalld:
+          permanent: yes
+          immediate: yes
+          service: "{{ item }}"
+          state: enabled
+        with_items:
+          - nfs
+          - mountd
+          - rpc-bind
+
+      - name: restart firewall
+        service:
+          name: firewalld
+          state: restarted
