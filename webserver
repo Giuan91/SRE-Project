@@ -28,3 +28,6 @@
 
         - name: Start apache server
           shell: systemctl start httpd
+
+        - name: Mount nfs file with SELinux Context
+          shell: mount 10.0.0.95:/var/nfs_shared_dir /var/www/html -o context="system_u:object_r:httpd_sys_content_t:s0"
