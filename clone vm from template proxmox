@@ -1,0 +1,3 @@
+---
+  - name: Clone new CeontOS 7 VM from Template
+    shell: qm clone 900 
