@@ -24,6 +24,7 @@
             name:
               - php
               - php-cli
+              - php-mysqlnd
             state: latest
 
         - name: Start apache server
