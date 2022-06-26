@@ -1,6 +1,6 @@
 ---
     - name: Installing all required apps for webserver on centos 7
-      hosts: all
+      hosts: all #needs to be modified
       become: yes
       tasks: 
 
