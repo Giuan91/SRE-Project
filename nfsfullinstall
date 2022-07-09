@@ -1,0 +1,5 @@
+---
+  - import_playbook: new_server_essentials.yml
+    vars:
+      hosts: nfs
+  - import_playbook: nfsserver.yml

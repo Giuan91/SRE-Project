@@ -28,11 +28,11 @@
           - 'nfs-lock'
           - 'nfs-idmap' 
     
-      - name: allow nfs in selinux
-        ansible.posix.seboolean:
-          name: nfs_export_all_rw
-          state: yes
-          persistent: yes
+      # - name: allow nfs in selinux
+      #   ansible.posix.seboolean:
+      #     name: nfs_export_all_rw
+      #     state: yes
+      #     persistent: yes
 
     #   - name: allow nfs in selinux
     #     shell: setsebool -P nfs_export_all_rw 1
@@ -46,6 +46,11 @@
         service:
             name: nfs-server
             state: restarted
+
+      - name: Make sure firewall is update
+        service: 
+          name: firewalld
+          state: started
 
       - name: Add rules in Firewall
         firewalld:
